@@ -25,6 +25,12 @@ public:
 	
 };
 
+class ClassThatUseDb : public DBConnection
+{
+public:
+	DBConnection dbCon;
+};
+
 //алгоритм для тестирования
 void working(interface_DBConnection* iDBConnection)
 {
@@ -38,16 +44,16 @@ void working(interface_DBConnection* iDBConnection)
 //тест
 TEST(DBConnectionTest, test1)
 {
-	DBConnection dbCon;
+	ClassThatUseDb workObj;
 
 	//методы должны быть вызваны ровно 1 раз
-	EXPECT_CALL(dbCon, open).Times(1);
-	EXPECT_CALL(dbCon, close).Times(1);
+	EXPECT_CALL(workObj.dbCon, open).Times(1);
+	EXPECT_CALL(workObj.dbCon, close).Times(1);
 
 	//метод должен быть вызван хотя бы 2 раза
-	EXPECT_CALL(dbCon, execQuery).Times(::testing::AtLeast(2));
+	EXPECT_CALL(workObj.dbCon, execQuery).Times(::testing::AtLeast(2));
 
-	working(&dbCon);
+	working(&workObj.dbCon);
 
 }
 
